@@ -10,7 +10,7 @@ $negative_sites_to_check = @{
 
 # The site URL, then the string that implies yes
 $positive_sites_to_check = @{
-    "https://www.newcastle.co.uk/mortgages/our-mortgage-products/" = '95%'
+    "https://www.newcastle.co.uk/mortgages/our-mortgage-products/" = "class=`"table-rates__rate`">95`%</td>"
 }
 
 $negative_sites_to_check.GetEnumerator() | ForEach-Object {
@@ -30,9 +30,9 @@ $positive_sites_to_check.GetEnumerator() | ForEach-Object {
     $status = $site.RawContent -match $_.value
     $siteroot = $_.key.Split("/")[2]
     if ($status -eq $false) {
-        Write-Output "For $siteroot, result was $status, SOMETHING MIGHT BE ON OFFER!"
+        Write-Output "For $siteroot, result was $status, so still nothing on offer"
     }
     else {
-        Write-Output "For $siteroot, result was $status, so still nothing on offer"
-    }    
+        Write-Output "For $siteroot, result was $status, SOMETHING MIGHT BE ON OFFER!"
+    }     
 }
