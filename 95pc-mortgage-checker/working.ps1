@@ -1,5 +1,8 @@
 ###
 
+# Config
+$userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0"
+
 # The site URL, then the string that implies no
 $negative_sites_to_check = @{
     "https://www.ybs.co.uk/mortgages/95-percent.html"                                              = "for the time being we are currently unable to accept applications above 85% Loan to Value"
@@ -14,7 +17,7 @@ $positive_sites_to_check = @{
 }
 
 $negative_sites_to_check.GetEnumerator() | ForEach-Object {
-    $site = Invoke-WebRequest -Uri $_.key -UserAgent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0" -Method Get
+    $site = Invoke-WebRequest -Uri $_.key -UserAgent $userAgent -Method Get
     $status = $site.RawContent -match $_.value
     $siteroot = $_.key.Split("/")[2]
     if ($status -eq $true) {
@@ -26,7 +29,7 @@ $negative_sites_to_check.GetEnumerator() | ForEach-Object {
 }
 
 $positive_sites_to_check.GetEnumerator() | ForEach-Object {
-    $site = Invoke-WebRequest -Uri $_.key -UserAgent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0" -Method Get
+    $site = Invoke-WebRequest -Uri $_.key -UserAgent $userAgent -Method Get
     $status = $site.RawContent -match $_.value
     $siteroot = $_.key.Split("/")[2]
     if ($status -eq $false) {
