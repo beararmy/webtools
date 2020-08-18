@@ -58,10 +58,10 @@ foreach ($site in $json_returning_sites_to_check) {
     }
     $siteroot = $site.Split("/")[2]
 
-    if ($result.Count -eq 0) {
-        Write-Output "For $siteroot, $($result.Count) results, so still nothing on offer"
-    }
-    elseif ($result.Count -gt 0) {
+    if ($result.Count -gt 0) {
         Write-Output "For $siteroot, $($result.Count) results, SOMETHING MIGHT BE ON OFFER!"
+    }
+    else {
+        Write-Output "For $siteroot, no results, so still nothing on offer"
     }
 }
