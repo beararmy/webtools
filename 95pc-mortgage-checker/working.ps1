@@ -23,11 +23,8 @@ $positive_sites_to_check = @{
 
 $json_returning_sites_to_check = @(
     "https://www.nationwide.co.uk/services/toolservice.svc/GetMortgageSelectorRates?buyerType=ftb&loanToValueTier=91&mortgageTerm=25&mortgageAmount=0&depositAmount=29250&additionalBorrowingAmount=0&propertyValue=325000&isHelpToBuy=0&isSaveToBuy=0&isFdm=0&isGreen=0&mortgageType=all&dealPeriod=&productFee=all&_=1597770911201"
+    "https://www.coventrybuildingsociety.co.uk/bin/cbs/mortgage/search?tag=buy_a_home&ltv=91"
 )
-
-## NEEDS WORK
-# https://www.coventrybuildingsociety.co.uk/content/cbs/consumer/en/mortgages/buying-a-home/mortgage-rates.html, java/dom doesn't render ltv in PS., oooh, maybe .Parsed HTML to get the same DOM as a browser?
-
 
 $negative_sites_to_check.GetEnumerator() | ForEach-Object {
     $site = Invoke-WebRequest -Uri $_.key -UserAgent $userAgent -Method Get
@@ -56,12 +53,15 @@ $positive_sites_to_check.GetEnumerator() | ForEach-Object {
 foreach ($site in $json_returning_sites_to_check) {
     $result = Invoke-WebRequest -uri $site -UserAgent $userAgent
     $result = ( $result | ConvertFrom-Json)
+    if ($result.Rates) {
+        $result = $result.Rates
+    }
     $siteroot = $site.Split("/")[2]
 
-    if ($result.ResultCount -eq 0) {
-        Write-Output "For $siteroot, $($result.ResultCount) results, so still nothing on offer"
+    if ($result.Count -eq 0) {
+        Write-Output "For $siteroot, $($result.Count) results, so still nothing on offer"
     }
-    elseif ($result.ResultCount -gt 0) {
-        Write-Output "For $siteroot, $($result.ResultCount) results, SOMETHING MIGHT BE ON OFFER!"
+    elseif ($result.Count -gt 0) {
+        Write-Output "For $siteroot, $($result.Count) results, SOMETHING MIGHT BE ON OFFER!"
     }
 }
