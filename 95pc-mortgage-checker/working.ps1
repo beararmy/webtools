@@ -21,10 +21,12 @@ $positive_sites_to_check = @{
     "https://www.postoffice.co.uk/mortgages/fixed-rate"                      = "(95% loan to value)"
 }
 
+$json_returning_sites_to_check = @(
+    "https://www.nationwide.co.uk/services/toolservice.svc/GetMortgageSelectorRates?buyerType=ftb&loanToValueTier=91&mortgageTerm=25&mortgageAmount=0&depositAmount=29250&additionalBorrowingAmount=0&propertyValue=325000&isHelpToBuy=0&isSaveToBuy=0&isFdm=0&isGreen=0&mortgageType=all&dealPeriod=&productFee=all&_=1597770911201"
+)
 
 ## NEEDS WORK
 # https://www.coventrybuildingsociety.co.uk/content/cbs/consumer/en/mortgages/buying-a-home/mortgage-rates.html, java/dom doesn't render ltv in PS., oooh, maybe .Parsed HTML to get the same DOM as a browser?
-# nationwide, requires submitted queries
 
 
 $negative_sites_to_check.GetEnumerator() | ForEach-Object {
@@ -49,4 +51,17 @@ $positive_sites_to_check.GetEnumerator() | ForEach-Object {
     else {
         Write-Output "For $siteroot, result was $status, SOMETHING MIGHT BE ON OFFER!"
     }     
+}
+
+foreach ($site in $json_returning_sites_to_check) {
+    $result = Invoke-WebRequest -uri $site -UserAgent $userAgent
+    $result = ( $result | ConvertFrom-Json)
+    $siteroot = $site.Split("/")[2]
+
+    if ($result.ResultCount -eq 0) {
+        Write-Output "For $siteroot, $($result.ResultCount) results, so still nothing on offer"
+    }
+    elseif ($result.ResultCount -gt 0) {
+        Write-Output "For $siteroot, $($result.ResultCount) results, SOMETHING MIGHT BE ON OFFER!"
+    }
 }
