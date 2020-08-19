@@ -27,31 +27,31 @@ $json_returning_sites_to_check = @(
 )
 
 $negative_sites_to_check.GetEnumerator() | ForEach-Object {
-    $site = Invoke-WebRequest -Uri $_.key -UserAgent $userAgent -Method Get
+    $site = Invoke-WebRequest -Uri $_.key -UserAgent $userAgent -Method Get -UseBasicParsing
     $status = $site.RawContent -match $_.value
     $siteroot = $_.key.Split("/")[2]
     if ($status -eq $true) {
-        Write-Output "For $siteroot, result was $status, so still nothing on offer"
+        #Write-Output "For $siteroot, result was $status, so still nothing on offer"
     }
     else {
-        Write-Output "For $siteroot, result was $status, SOMETHING MIGHT BE ON OFFER!"
+        Write-Error "Offer found" -CategoryTargetName "Something's on offer!" -ErrorId "Go check out $siteroot"
     }    
 }
 
 $positive_sites_to_check.GetEnumerator() | ForEach-Object {
-    $site = Invoke-WebRequest -Uri $_.key -UserAgent $userAgent -Method Get
+    $site = Invoke-WebRequest -Uri $_.key -UserAgent $userAgent -Method Get -UseBasicParsing
     $status = $site.RawContent -match $_.value
     $siteroot = $_.key.Split("/")[2]
     if ($status -eq $false) {
-        Write-Output "For $siteroot, result was $status, so still nothing on offer"
+        #Write-Output "For $siteroot, result was $status, so still nothing on offer"
     }
     else {
-        Write-Output "For $siteroot, result was $status, SOMETHING MIGHT BE ON OFFER!"
+        Write-Error "Offer found" -CategoryTargetName "Something's on offer!" -ErrorId "Go check out $siteroot"
     }     
 }
 
 foreach ($site in $json_returning_sites_to_check) {
-    $result = Invoke-WebRequest -uri $site -UserAgent $userAgent
+    $result = Invoke-WebRequest -uri $site -UserAgent $userAgent -UseBasicParsing
     $result = ( $result | ConvertFrom-Json)
     if ($result.Rates) {
         $result = $result.Rates
@@ -59,9 +59,9 @@ foreach ($site in $json_returning_sites_to_check) {
     $siteroot = $site.Split("/")[2]
 
     if ($result.Count -gt 0) {
-        Write-Output "For $siteroot, $($result.Count) results, SOMETHING MIGHT BE ON OFFER!"
+        Write-Error "Offer found" -CategoryTargetName "Something's on offer!" -ErrorId "Go check out $siteroot"
     }
     else {
-        Write-Output "For $siteroot, no results, so still nothing on offer"
+        #Write-Output "For $siteroot, no results, so still nothing on offer"
     }
 }
