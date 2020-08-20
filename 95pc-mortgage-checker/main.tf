@@ -1,9 +1,5 @@
 provider "azurerm" {
-  features {
-    key_vault {
-      purge_soft_delete_on_destroy = true
-    }
-  }
+  features {}
 }
 
 data "azurerm_client_config" "current" {}
@@ -12,30 +8,6 @@ resource "azurerm_resource_group" "mortgage95pc" {
   name     = "shp-${var.env}-${var.location}-${var.shortname}"
   location = var.location
 }
-
-# Not used yet, will be for email sending secret. Maybe.
-# resource "azurerm_key_vault" "mortgage95pc" {
-#   name                = "northeuropekv"
-#   location            = azurerm_resource_group.mortgage95pc.location
-#   resource_group_name = azurerm_resource_group.mortgage95pc.name
-#   tenant_id           = data.azurerm_client_config.current.tenant_id
-#   soft_delete_enabled = true
-#   sku_name            = "standard"
-#   access_policy {
-#     tenant_id = data.azurerm_client_config.current.tenant_id
-#     object_id = data.azurerm_client_config.current.object_id
-#     key_permissions = [
-#       "create",
-#       "list",
-#       "get"
-#     ]
-#     secret_permissions = [
-#       "set",
-#       "list",
-#       "get"
-#     ]
-#   }
-# }
 
 resource "azurerm_automation_account" "mortgage95pc" {
   name                = "shp-${var.env}-${var.location}-${var.shortname}-aa"
