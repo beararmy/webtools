@@ -2,18 +2,31 @@
 
 I installed non-Dell (_how dare I?!_) hardware into my R7910 the fans sit around 5000 rpm each because of a 'non-oem hardware profile'. This is not acceptable for a quiet office so I have enabled IPMI over Network from within the iDRAC and manually turn runs up and down. I know this ESX host is rarely CPU stressed so am comforable with long check durations.
 
+## Setup
+
+1. Install the shell script somewhere local
+
+2. Create credentials and enable IPMI over LAN on the iDrac
+
+2. Configure your login creds, temperatures, limits, and fan speeds (and maybe name of CPU temp, R7910 is just 'temp' so this may need smol rework)
+
+3. Cronjob to call the script
+
+4. Profit.
+
 ## Drac Config
 
 I add another user specifically for this. No other permissions should be required.
 
 ### Create a user
+
 1. Overview > iDRAC Settings > User Authentication
 
 2. Click on a user number.
 
 3. Under IPMI User Privileges
-Set "Maximum LAN User Privilege Granted" to *Administrator*
 
+Set "Maximum LAN User Privilege Granted" to *Administrator*
 
 ### Enable IPMI
 
